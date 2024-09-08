@@ -25,6 +25,7 @@ export default function SearchBar({}: SearchBarProps) {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
+    marginBottom: 10
   },
   searchBar: {
     backgroundColor: "#e4e4e4",
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: "row",
     gap: 10,
+
   },
   searchText: {
     fontSize: 14,

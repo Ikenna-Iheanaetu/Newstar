@@ -5,7 +5,7 @@ import { NewsService } from './news.service';
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Get('featured')
+  @Get('breaking-news')
   @HttpCode(HttpStatus.OK)
   getFeaturedNews() {
     return this.newsService.getFeaturedNews();
