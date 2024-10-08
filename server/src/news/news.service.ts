@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { ArticlesProps, NewsDataType } from 'src/types/news';
 
 @Injectable()
 export class NewsService {
@@ -9,14 +10,14 @@ export class NewsService {
     this.apiKey = process.env.API_KEY;
   }
 
-  async getFeaturedNews() {
-    const url = `https://newsapi.org/v2/everything?q=Nigeria&sortBy=popularity&pageSize=5&apiKey=${this.apiKey}`;
+  async getFeaturedNews(): Promise<ArticlesProps[]> {
+    const url: string = `https://newsapi.org/v2/everything?q=Nigeria&sortBy=popularity&pageSize=5&apiKey=${this.apiKey}`;
     console.log(url);
 
     try {
-      const { data } = await axios.get(url);
+      const { data } = await axios.get<NewsDataType>(url);
 
-      return data;
+      return data.articles;
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Sorry something went wrong');

@@ -7,17 +7,16 @@ import Header from "@/components/header";
 import SearchBar from "@/components/searchBar";
 import { Colors } from "@/constants/Colors";
 import { getBreakingNews } from "@/lib/fetchNews";
-import { NewsDataType } from "@/types";
+import { ArticlesProps, NewsDataType } from "@/types";
 
 export default function Index() {
   const { top: safeTop } = useSafeAreaInsets();
-  const [breakingNews, setBreakingNews] = useState<NewsDataType[]>([]);
+  const [breakingNews, setBreakingNews] = useState<ArticlesProps[]>([]);
   const { data, loading, error, refetch } = getBreakingNews();
 
   useEffect(() => {
     if (data) {
       setBreakingNews(data);
-      console.log(data)
     }
   }, [data]);
 

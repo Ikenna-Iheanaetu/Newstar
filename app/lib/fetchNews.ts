@@ -1,12 +1,12 @@
 import { useFetch } from "@/hooks/useFetch";
-import { NewsDataType } from "@/types";
+import { ArticlesProps, NewsDataType } from "@/types";
 
-const url = 'http://localhost:3000/news';
+const url = 'http://192.168.56.1:3000/news';
 
 if (!url) {
   console.error("EXPO_PUBLIC__NEWS_SERVER_URL is not set in the environment");
 }
 
 export const getBreakingNews = () => {
-  return useFetch<NewsDataType[]>(`${url}/breaking-news`);
+  return useFetch<ArticlesProps[]>(`${url}/breaking-news`);
 };
