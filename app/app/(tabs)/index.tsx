@@ -8,6 +8,7 @@ import SearchBar from "@/components/searchBar";
 import { Colors } from "@/constants/Colors";
 import { getBreakingNews } from "@/lib/fetchNews";
 import { ArticlesProps, NewsDataType } from "@/types";
+import Categories from "@/components/categories";
 
 export default function Index() {
   const { top: safeTop } = useSafeAreaInsets();
@@ -26,15 +27,16 @@ export default function Index() {
       <SearchBar />
       {loading ? (
         <ActivityIndicator
-          size="large"
-          color={Colors.black}
-          style={styles.indicator}
+        size="large"
+        color={Colors.black}
+        style={styles.indicator}
         />
       ) : error ? (
         <FetchErrorView onPress={refetch} />
       ) : (
         <BreakingNews newsList={breakingNews} />
       )}
+      <Categories />
     </View>
   );
 }
