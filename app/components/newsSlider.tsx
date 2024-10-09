@@ -1,10 +1,22 @@
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Image,
+  Pressable,
+} from "react-native";
 import React from "react";
 import { ArticlesProps, NewsDataType } from "@/types";
 import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
 import { Colors } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, { Extrapolation, interpolate, useAnimatedStyle } from "react-native-reanimated";
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import { router } from "expo-router";
 
 interface NewsSliderProps {
   item: ArticlesProps;
@@ -24,7 +36,7 @@ export default function NewsSlider({ item, index, scrollX }: NewsSliderProps) {
             [(index - 1) * width, index * width, (index + 1) * width],
             [-width * 0.15, 0, width * 0.15],
             Extrapolation.CLAMP
-          )
+          ),
         },
         {
           scale: interpolate(
@@ -32,24 +44,53 @@ export default function NewsSlider({ item, index, scrollX }: NewsSliderProps) {
             [(index - 1) * width, index * width, (index + 1) * width],
             [0.9, 1, 0.9],
             Extrapolation.CLAMP
-          )
-        }
-      ]
-    }
-  })
+          ),
+        },
+      ],
+    };
+  });
+
+  const onNavigateToViewContent = () => {
+    const {  
+      author, 
+      title, 
+      description, 
+      url, 
+      urlToImage, 
+      publishedAt, 
+      content,
+      source
+  } = item; 
+
+    router.push({
+      pathname: "/newsInfoDetails",
+      params: {
+        author,
+        title,
+        description,
+        url,
+        urlToImage,
+        publishedAt,
+        content,
+        source: source.name
+      }
+    })
+  }
 
   return (
     <Animated.View style={[styles.itemWrapper, rnStyle]} key={index}>
-      <Image source={{ uri: item.urlToImage }} style={styles.image} />
-      <LinearGradient
-        colors={["transparent", "rgba(0, 0, 0, 0.8)"]}
-        style={styles.background}
-      >
-        <Text style={styles.sourceName}>Source: {item.source.name}</Text>
-        <Text style={styles.sourceDesc} numberOfLines={2}>
-          {item.description}
-        </Text>
-      </LinearGradient>
+      <Pressable onPress={onNavigateToViewContent}>
+        <Image source={{ uri: item.urlToImage }} style={styles.image} />
+        <LinearGradient
+          colors={["transparent", "rgba(0, 0, 0, 0.8)"]}
+          style={styles.background}
+        >
+          <Text style={styles.sourceName}>Source: {item.source.name}</Text>
+          <Text style={styles.sourceDesc} numberOfLines={2}>
+            {item.description}
+          </Text>
+        </LinearGradient>
+      </Pressable>
     </Animated.View>
   );
 }
@@ -68,7 +109,7 @@ const styles = StyleSheet.create({
   },
   background: {
     position: "absolute",
-    left: 30,
+    left: 0,
     right: 0,
     top: 0,
     width: width - 60,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BreakingNews from "@/components/breakingNews";
 import FetchErrorView from "@/components/fetchErrorView";
@@ -66,7 +66,7 @@ export default function Index() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: safeTop }]}>
+    <ScrollView style={[styles.container, { marginTop: safeTop }]}>
       <Header />
       <SearchBar />
       {loading ? (
@@ -94,7 +94,7 @@ export default function Index() {
           newsCategoryError={newsCategoryError}
         />
       </>
-    </View>
+    </ScrollView>
   );
 }
 
