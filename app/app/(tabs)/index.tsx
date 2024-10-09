@@ -9,6 +9,7 @@ import { Colors } from "@/constants/Colors";
 import { getBreakingNews } from "@/lib/fetchNews";
 import { ArticlesProps, NewsDataType } from "@/types";
 import Categories from "@/components/categories";
+import NewsByCategory from "@/components/newsByCategory";
 
 export default function Index() {
   const { top: safeTop } = useSafeAreaInsets();
@@ -21,22 +22,27 @@ export default function Index() {
     }
   }, [data]);
 
+  const onCategoryChange = (category: string) => {};
+
   return (
     <View style={[styles.container, { paddingTop: safeTop }]}>
       <Header />
       <SearchBar />
       {loading ? (
         <ActivityIndicator
-        size="large"
-        color={Colors.black}
-        style={styles.indicator}
+          size="large"
+          color={Colors.black}
+          style={styles.indicator}
         />
       ) : error ? (
         <FetchErrorView onPress={refetch} />
       ) : (
         <BreakingNews newsList={breakingNews} />
       )}
-      <Categories />
+      <>
+        <Categories onCategoryChange={onCategoryChange} />
+        <NewsByCategory newsList={breakingNews} />
+      </>
     </View>
   );
 }

@@ -8,9 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-interface CategoriesProps {}
+interface CategoriesProps {
+  onCategoryChange: (category: string) => void
+}
 
-export default function Categories({}: CategoriesProps) {
+export default function Categories({ onCategoryChange }: CategoriesProps) {
   const scrollRef = useRef<ScrollView>(null);
   const itemRef = useRef<TouchableOpacity[] | null[]>([]);
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -22,6 +24,8 @@ export default function Categories({}: CategoriesProps) {
     selected?.measure((x) => {
       scrollRef.current?.scrollTo({ x: x - 20, y: 0, animated: true });
     });
+
+    onCategoryChange(newsCategoryList[index].slug)
   };
 
   return (

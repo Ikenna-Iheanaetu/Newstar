@@ -1,5 +1,6 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
 import { NewsService } from './news.service';
+import { NewsCategory } from './enum/news-category.enum';
 
 @Controller('news')
 export class NewsController {
@@ -9,5 +10,11 @@ export class NewsController {
   @HttpCode(HttpStatus.OK)
   getFeaturedNews() {
     return this.newsService.getFeaturedNews();
+  }
+
+  @Get('category/:category')
+  @HttpCode(HttpStatus.OK)
+  getNewsInCategory(@Param('category') category: NewsCategory) {
+    return this.newsService.getNewsInCategory(category);
   }
 }
