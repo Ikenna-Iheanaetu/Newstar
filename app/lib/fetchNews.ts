@@ -10,3 +10,7 @@ if (!url) {
 export const getBreakingNews = () => {
   return useFetch<ArticlesProps[]>(`${url}/breaking-news`);
 };
+
+export const getNewsByCategory = (category: string) => {
+  return useFetch<ArticlesProps[]>(`${url}/category/${category}`);
+}

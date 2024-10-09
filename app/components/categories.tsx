@@ -8,24 +8,32 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 interface CategoriesProps {
-  onCategoryChange: (category: string) => void
+  onCategoryChange: (category: number) => void;
+  activeNewsCategoryIndex: number;
+  setActiveNewsCategoryIndex: React.Dispatch<
+    React.SetStateAction<number>
+  >;
 }
 
-export default function Categories({ onCategoryChange }: CategoriesProps) {
+export default function Categories({
+  onCategoryChange,
+  activeNewsCategoryIndex,
+  setActiveNewsCategoryIndex,
+}: CategoriesProps) {
   const scrollRef = useRef<ScrollView>(null);
   const itemRef = useRef<TouchableOpacity[] | null[]>([]);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   const handleSelectCategory = (index: number) => {
     const selected = itemRef.current[index];
-    setActiveIndex(index);
+    setActiveNewsCategoryIndex(index);
 
     selected?.measure((x) => {
       scrollRef.current?.scrollTo({ x: x - 20, y: 0, animated: true });
     });
 
-    onCategoryChange(newsCategoryList[index].slug)
+    onCategoryChange(index);
   };
 
   return (
@@ -42,13 +50,16 @@ export default function Categories({ onCategoryChange }: CategoriesProps) {
             <TouchableOpacity
               ref={(element) => itemRef.current[index] === element}
               key={index}
-              style={[styles.item, activeIndex === index && styles.itemActive]}
+              style={[
+                styles.item,
+                activeNewsCategoryIndex === index && styles.itemActive,
+              ]}
               onPress={() => handleSelectCategory(index)}
             >
               <Text
                 style={[
                   styles.itemText,
-                  activeIndex === index && styles.itemTextActive,
+                  activeNewsCategoryIndex === index && styles.itemTextActive,
                 ]}
               >
                 {category.title}
@@ -64,7 +75,7 @@ export default function Categories({ onCategoryChange }: CategoriesProps) {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 10,
-    marginTop: 25
+    marginTop: 25,
   },
   title: {
     fontSize: 18,
@@ -84,7 +95,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.darkGrey,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    borderRadius: 8
+    borderRadius: 8,
   },
   itemActive: {
     backgroundColor: Colors.tint,
