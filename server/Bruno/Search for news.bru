@@ -1,0 +1,17 @@
+meta {
+  name: Search for news
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/news/search-news
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "searchString": "USA Election"
+  }
+}

@@ -42,4 +42,21 @@ export class NewsService {
       throw new BadRequestException('Sorry something went wrong');
     }
   }
+
+  async getSearchNews(searchString: string): Promise<ArticlesProps[]> {
+    if (!searchString)
+      throw new BadRequestException('Sorry something went wrong');
+
+    const url: string = `https://newsapi.org/v2/everything?q=${searchString}&sortBy=relevancy&pageSize=20&apiKey=${this.apiKey}`;
+    console.log(url);
+
+    try {
+      const { data } = await axios.get<NewsDataType>(url);
+
+      return data.articles;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Sorry something went wrong');
+    }
+  }
 }
