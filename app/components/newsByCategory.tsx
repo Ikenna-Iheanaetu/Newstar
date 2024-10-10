@@ -1,18 +1,16 @@
-import { Colors } from "@/constants/Colors";
 import { ArticlesProps } from "@/types";
 import { NewsByCategoryType } from "@/types/newsByCategory";
 import {
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity,
   Pressable,
 } from "react-native";
 import FetchErrorView from "./fetchErrorView";
 import { router } from "expo-router";
+import { useDarkMode } from "@/context/darkModeProvider";
 
 interface NewsByCategoryProps {
   newsByCategory: NewsByCategoryType;
@@ -29,14 +27,16 @@ export default function NewsByCategory({
   newsCategoryLoading,
   newsCategoryError,
 }: NewsByCategoryProps) {
+  const { Colors } = useDarkMode();
+
   // Get the news articles for the active category
   const articles: ArticlesProps[] = newsByCategory[activeNewsSlug] || [];
 
   if (newsCategoryLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.black} />
-        <Text>Loading news...</Text>
+        <ActivityIndicator size="large" color={Colors.activityLoaderColor} />
+        <Text style={{ color: Colors.text }}>Loading news...</Text>
       </View>
     );
   }
@@ -54,7 +54,7 @@ export default function NewsByCategory({
       urlToImage,
       publishedAt,
       content,
-      source
+      source,
     } = articles[index];
 
     router.push({
@@ -67,7 +67,7 @@ export default function NewsByCategory({
         urlToImage,
         publishedAt,
         content,
-        source: source.name
+        source: source.name,
       },
     });
   };
@@ -83,16 +83,16 @@ export default function NewsByCategory({
           >
             <Image source={{ uri: news.urlToImage }} style={styles.newsImage} />
             <View style={styles.itemInfo}>
-              <Text style={styles.itemTitle}>{news.title}</Text>
-              <Text style={styles.itemDesc} numberOfLines={2}>
+              <Text style={[styles.itemTitle, { color: Colors.heading }]}>{news.title}</Text>
+              <Text style={{ color: Colors.darkGrey }} numberOfLines={2}>
                 {news.description}
               </Text>
-              <Text>{news.source.name}</Text>
+              <Text style={{ color: Colors.text }}>{news.source.name}</Text>
             </View>
           </Pressable>
         ))
       ) : (
-        <Text style={styles.noNewsText}>
+        <Text style={[styles.noNewsText, { color: Colors.heading }]}>
           No news available for this category.
         </Text>
       )}
@@ -132,12 +132,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     letterSpacing: 0.8,
   },
-  itemDesc: {
-    color: Colors.darkGrey,
-  },
   noNewsText: {
     textAlign: "center",
     marginTop: 20,
-    color: Colors.darkGrey,
   },
 });

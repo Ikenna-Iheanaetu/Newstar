@@ -1,14 +1,9 @@
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
-import { ArticlesProps, NewsDataType } from "@/types";
+import { ArticlesProps } from "@/types";
 import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
-import { Colors } from "@/constants/Colors";
-import { LinearGradient } from "expo-linear-gradient";
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
+import { useDarkMode } from "@/context/darkModeProvider";
 
 interface PaginationProps {
   items: ArticlesProps[];
@@ -21,6 +16,8 @@ export default function Pagination({
   paginationIndex,
   scrollX,
 }: PaginationProps) {
+  const { Colors } = useDarkMode()
+
   return (
     <View style={styles.container}>
       {items.map((_, index) => {

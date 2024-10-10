@@ -1,22 +1,50 @@
 import { View, Text, StyleSheet, Pressable, Switch } from "react-native";
-import React, { useState } from "react";
-import { Colors } from "@/constants/Colors";
+import React, { useState, useEffect, useLayoutEffect } from "react";
+import { useDarkMode } from "@/context/darkModeProvider";
+import { getIsDarkModeTrue } from "@/utils/darkModeStorage";
+import { StatusBar } from "expo-status-bar";
+import { useNavigation } from "expo-router";
 
 export default function Settings() {
-  const [enabled, setEnabled] = useState<boolean>(false);
-  const toggleSwitch = () => {
-    setEnabled(!enabled);
-  };
+  const { enabled, toggleDarkMode, Colors } = useDarkMode();
+  const [isDarkModeActive, setIsDarkModeActive] = useState<boolean>(false);
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: "Settings", 
+      headerStyle: {
+        backgroundColor: Colors.background, 
+      },
+      headerTintColor: Colors.heading, 
+
+    });
+  }, [navigation, Colors]);
+
+  useEffect(() => {
+    const fetchDarkModeSetting = async () => {
+      const isDarkTrue = await getIsDarkModeTrue();
+      setIsDarkModeActive(isDarkTrue);
+    };
+
+    fetchDarkModeSetting();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.itemBtn}>
-        <Text style={styles.itemText}>Dark Theme</Text>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
+      <StatusBar
+        style={isDarkModeActive ? "light" : "dark"} // Adjust the text color
+        backgroundColor={Colors.background}
+      />
+      <Pressable style={[styles.itemBtn, { backgroundColor: Colors.settingCard }]}>
+        <Text style={[styles.itemText, { color: Colors.text }]}>
+          Dark Mode
+        </Text>
         <Switch
-          trackColor={{ false: "#767577", true: "#3e3e3e" }}
-          thumbColor={enabled ? "#f5dd4b" : "#f3f3f4"}
+          trackColor={{ false: "#767577", true: "#f4f4f4" }}
+          thumbColor={enabled ? Colors.tint : "#f3f3f4"}
           ios_backgroundColor={"#3e3e3e"}
-          onValueChange={toggleSwitch}
+          onValueChange={toggleDarkMode}
           value={enabled}
           style={{ transform: [{ scale: 1 }] }}
         />
@@ -34,13 +62,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: Colors.white,
+
     paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   itemText: {
     fontSize: 14,
     fontWeight: "500",
-    color: Colors.black,
   },
 });

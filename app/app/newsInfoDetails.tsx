@@ -1,5 +1,3 @@
-import { Colors } from "@/constants/Colors";
-import { ArticlesProps } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import {
   View,
@@ -9,12 +7,19 @@ import {
   Image,
   Pressable,
 } from "react-native";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import Moment from "moment";
 import * as Linking from "expo-linking";
+import { useDarkMode } from "@/context/darkModeProvider";
+import { StatusBar } from "expo-status-bar";
+import { getIsDarkModeTrue } from "@/utils/darkModeStorage";
+import { useNavigation } from "@react-navigation/native";
 
 interface NewsInfoDetailsProps {}
 
 export default function NewsInfoDetails({}: NewsInfoDetailsProps) {
+  const { Colors } = useDarkMode();
+
   const {
     sourceName,
     author,
@@ -41,23 +46,59 @@ export default function NewsInfoDetails({}: NewsInfoDetailsProps) {
     Linking.openURL(url);
   };
 
+  const [isDarkModeActive, setIsDarkModeActive] = useState<boolean>(false);
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: "News Details", // Title of the screen
+      headerStyle: {
+        backgroundColor: Colors.background, // Background color of the header
+      },
+      headerTintColor: Colors.heading, // Color of the back arrow and header text
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    const fetchDarkModeSetting = async () => {
+      const isDarkTrue = await getIsDarkModeTrue();
+      setIsDarkModeActive(isDarkTrue);
+    };
+
+    fetchDarkModeSetting();
+  }, []);
+
   return (
     <ScrollView
       contentContainerStyle={styles.contentContainer}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: Colors.background }]}
     >
-      <Text style={styles.title}>{title}</Text>
+      <StatusBar
+        style={isDarkModeActive ? "light" : "dark"}
+        backgroundColor={Colors.background}
+      />
+      <Text style={[styles.title, { color: Colors.heading }]}>{title}</Text>
       <View style={styles.newsInfoWrapper}>
-        <Text style={styles.newsInfo}>
+        <Text style={[styles.newsInfo, { color: Colors.darkGrey }]}>
           {Moment(publishedAt).format("MMMM DD, hh:mm a")}
         </Text>
-        <Text style={styles.newsInfo}> {source}</Text>
+        <Text style={[styles.newsInfo, { color: Colors.darkGrey }]}>
+          {" "}
+          {source}
+        </Text>
       </View>
       <Image source={{ uri: urlToImage }} style={styles.newsImg} />
-      <Text style={styles.newsContent}>{content}</Text>
+      <Text style={[styles.newsContent, { color: Colors.text }]}>
+        {content}
+      </Text>
       <View>
         <Text
-          style={{ marginTop: 20, letterSpacing: 0.6, textAlign: "center" }}
+          style={{
+            marginTop: 20,
+            letterSpacing: 0.6,
+            textAlign: "center",
+            color: Colors.softText,
+          }}
         >
           If you want to read the complete article click on the link -{" "}
         </Text>
@@ -65,7 +106,7 @@ export default function NewsInfoDetails({}: NewsInfoDetailsProps) {
           style={{ justifyContent: "center", marginTop: 10 }}
           onPress={handlePress}
         >
-          <Text style={{ color: "blue", letterSpacing: 0.6 }}>{url}</Text>
+          <Text style={{ color: Colors.link, letterSpacing: 0.6 }}>{url}</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -100,11 +141,9 @@ const styles = StyleSheet.create({
   },
   newsInfo: {
     fontSize: 12,
-    color: Colors.darkGrey,
   },
   newsContent: {
     fontSize: 14,
-    color: "#333",
     letterSpacing: 0.8,
     lineHeight: 22,
   },

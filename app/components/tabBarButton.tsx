@@ -1,4 +1,4 @@
-import { Text, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
 import Animated, {
   interpolate,
@@ -7,8 +7,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { icon } from "@/constants/Icons";
-import { Colors } from "@/constants/Colors";
-
+import { useDarkMode } from "@/context/darkModeProvider";
 interface TabBarButtonProps {
   onPress: Function;
   onLongPress: Function;
@@ -24,6 +23,7 @@ export default function TabBarButton({
   routeName,
   label,
 }: TabBarButtonProps) {
+  const { Colors } = useDarkMode()
   const opacity = useSharedValue(0);
 
   useEffect(() => {

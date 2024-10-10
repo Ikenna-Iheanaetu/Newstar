@@ -1,8 +1,7 @@
 import { View, StyleSheet, TextInput } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import { router } from "expo-router";
+import { useDarkMode } from "@/context/darkModeProvider";
 
 interface SearchBarProps {
   textValue?: string;
@@ -13,20 +12,18 @@ interface SearchBarProps {
 export default function SearchBar({
   textValue,
   setTextValue,
-  handleSubmit
+  handleSubmit,
 }: SearchBarProps) {
-
+  const { Colors } = useDarkMode();
 
   return (
     <View style={styles.container}>
-      <View
-        style={styles.searchBar}
-      >
+      <View style={styles.searchBar}>
         <Ionicons name="search-outline" size={24} color={Colors.lightGrey} />
         <TextInput
           placeholder="Search"
           placeholderTextColor={Colors.lightGrey}
-          style={styles.searchText}
+          style={[styles.searchText, { color: Colors.darkGrey }]}
           autoCapitalize="none"
           cursorColor={Colors.darkGrey}
           value={textValue}
@@ -58,6 +55,5 @@ const styles = StyleSheet.create({
   searchText: {
     fontSize: 14,
     flex: 1,
-    color: Colors.darkGrey,
   },
 });

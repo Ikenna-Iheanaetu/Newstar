@@ -5,6 +5,10 @@ import SearchBar from "@/components/searchBar";
 import { useLocalSearchParams } from "expo-router";
 import { ArticlesProps } from "@/types";
 import NewsFromSearch from "@/components/newsFromSearch";
+import { useDarkMode } from "@/context/darkModeProvider";
+import { getIsDarkModeTrue } from "@/utils/darkModeStorage";
+import { StatusBar } from "expo-status-bar";
+
 
 export default function Discover() {
   const { top: safeTop } = useSafeAreaInsets();
@@ -13,12 +17,25 @@ export default function Discover() {
   const [data, setData] = useState<ArticlesProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [isDarkModeActive, setIsDarkModeActive] = useState<boolean>(false);
+
+  const {  Colors } = useDarkMode()
 
   useEffect(() => {
     if (searchQuery) {
       handleRequest(searchQuery.trim());
     }
   }, [searchQuery]);
+
+
+  useEffect(() => {
+    const fetchDarkModeSetting = async () => {
+      const isDarkTrue = await getIsDarkModeTrue();
+      setIsDarkModeActive(isDarkTrue);
+    };
+
+    fetchDarkModeSetting();
+  }, []);
 
   const handleRequest = async (searchString: string) => {
     setLoading(true);
@@ -61,7 +78,11 @@ console.log(res);
   };
 
   return (
-    <View style={[styles.container, { marginTop: safeTop + 20 }]}>
+    <View style={[styles.container, { paddingTop: safeTop + 20, backgroundColor: Colors.background }]}>
+      <StatusBar
+        style={isDarkModeActive ? "light" : "dark"} // Adjust the text color
+        backgroundColor={Colors.background}
+      />
       <SearchBar
         textValue={textValue}
         setTextValue={setTextValue}
@@ -82,6 +103,5 @@ console.log(res);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
 });

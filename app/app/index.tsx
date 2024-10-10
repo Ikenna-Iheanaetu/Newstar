@@ -7,14 +7,16 @@ import {
 } from "react-native";
 import React from "react";
 import { router } from "expo-router";
-import { Colors } from "@/constants/Colors";
 import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
+import { useDarkMode } from "@/context/darkModeProvider";
 
 export default function Index() {
+  const { Colors } = useDarkMode();
+
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style={"light"} />
       <ImageBackground
         source={require("@/assets/images/getting-started.jpg")}
         style={{ flex: 1 }}
@@ -22,23 +24,25 @@ export default function Index() {
       >
         <View style={styles.wrapper}>
           <Animated.Text
-            style={styles.title}
+            style={[styles.title, { color: Colors.white }]}
             entering={FadeInRight.delay(300).duration(500)}
           >
             Stay Updated
           </Animated.Text>
           <Animated.Text
-            style={styles.desc}
+            style={[styles.desc, { color: Colors.white }]}
             entering={FadeInRight.delay(700).duration(500)}
           >
             Get breaking news and personalized updates directly to your feed
           </Animated.Text>
           <Animated.View entering={FadeInDown.delay(1200).duration(500)}>
             <Pressable
-              style={styles.btn}
+              style={[styles.btn, { backgroundColor: Colors.tint }]}
               onPress={() => router.replace("/(tabs)/")}
             >
-              <Text style={styles.btnText}>Get Started</Text>
+              <Text style={[styles.btnText, { color: Colors.white }]}>
+                Get Started
+              </Text>
             </Pressable>
           </Animated.View>
         </View>
@@ -60,7 +64,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   title: {
-    color: Colors.white,
     fontSize: 24,
     fontWeight: "600",
     letterSpacing: 1.5,
@@ -68,7 +71,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   desc: {
-    color: Colors.white,
     fontSize: 16,
     fontWeight: "500",
     letterSpacing: 1.2,
@@ -76,14 +78,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   btn: {
-    backgroundColor: Colors.tint,
     paddingVertical: 15,
     marginVertical: 15,
     alignItems: "center",
     borderRadius: 10,
   },
   btnText: {
-    color: Colors.white,
     fontSize: 16,
     fontWeight: "700",
   },

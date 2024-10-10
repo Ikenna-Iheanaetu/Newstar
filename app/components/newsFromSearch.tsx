@@ -1,6 +1,4 @@
-import { Colors } from "@/constants/Colors";
 import { ArticlesProps } from "@/types";
-import { NewsByCategoryType } from "@/types/newsByCategory";
 import {
   Image,
   ScrollView,
@@ -8,11 +6,11 @@ import {
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity,
   Pressable,
 } from "react-native";
 import FetchErrorView from "./fetchErrorView";
 import { router } from "expo-router";
+import { useDarkMode } from "@/context/darkModeProvider";
 
 interface NewsFromSearchProps {
   data: ArticlesProps[];
@@ -27,6 +25,9 @@ export default function NewsFromSearch({
   loading,
   error,
 }: NewsFromSearchProps) {
+  const { Colors } = useDarkMode()
+
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -77,11 +78,11 @@ export default function NewsFromSearch({
         >
           <Image source={{ uri: news.urlToImage }} style={styles.newsImage} />
           <View style={styles.itemInfo}>
-            <Text style={styles.itemTitle}>{news.title}</Text>
-            <Text style={styles.itemDesc} numberOfLines={2}>
+            <Text style={[styles.itemTitle, { color: Colors.heading }]}>{news.title}</Text>
+            <Text style={{ color: Colors.darkGrey }} numberOfLines={2}>
               {news.description}
             </Text>
-            <Text>{news.source.name}</Text>
+            <Text style={{ color: Colors.text }}>{news.source.name}</Text>
           </View>
         </Pressable>
       ))}
@@ -120,13 +121,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     letterSpacing: 0.8,
-  },
-  itemDesc: {
-    color: Colors.darkGrey,
-  },
-  noNewsText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: Colors.darkGrey,
-  },
+  }
 });

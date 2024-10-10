@@ -1,6 +1,6 @@
 import newsCategoryList from "@/constants/Categories";
-import { Colors } from "@/constants/Colors";
-import { useRef, useState } from "react";
+import { useDarkMode } from "@/context/darkModeProvider";
+import { useRef } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -12,9 +12,7 @@ import {
 interface CategoriesProps {
   onCategoryChange: (category: number) => void;
   activeNewsCategoryIndex: number;
-  setActiveNewsCategoryIndex: React.Dispatch<
-    React.SetStateAction<number>
-  >;
+  setActiveNewsCategoryIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function Categories({
@@ -24,6 +22,7 @@ export default function Categories({
 }: CategoriesProps) {
   const scrollRef = useRef<ScrollView>(null);
   const itemRef = useRef<TouchableOpacity[] | null[]>([]);
+  const { Colors } = useDarkMode();
 
   const handleSelectCategory = (index: number) => {
     const selected = itemRef.current[index];
@@ -38,7 +37,9 @@ export default function Categories({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Trending Right Now</Text>
+      <Text style={[styles.title, { color: Colors.heading }]}>
+        Trending Right Now
+      </Text>
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -52,14 +53,21 @@ export default function Categories({
               key={index}
               style={[
                 styles.item,
-                activeNewsCategoryIndex === index && styles.itemActive,
+                { borderColor: Colors.border },
+                activeNewsCategoryIndex === index && {
+                  backgroundColor: Colors.tint,
+                  borderColor: Colors.tint,
+                },
               ]}
               onPress={() => handleSelectCategory(index)}
             >
               <Text
                 style={[
-                  styles.itemText,
-                  activeNewsCategoryIndex === index && styles.itemTextActive,
+                  { color: Colors.text },
+                  activeNewsCategoryIndex === index && {
+                    fontWeight: "600",
+                    color: Colors.white,
+                  },
                 ]}
               >
                 {category.title}
@@ -80,7 +88,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: Colors.black,
     marginBottom: 10,
     marginLeft: 20,
   },
@@ -92,22 +99,12 @@ const styles = StyleSheet.create({
   },
   item: {
     borderWidth: 1,
-    borderColor: Colors.darkGrey,
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 8,
   },
-  itemActive: {
-    backgroundColor: Colors.tint,
-    borderColor: Colors.tint,
-  },
   itemText: {
     fontSize: 14,
-    color: Colors.darkGrey,
     letterSpacing: 0.5,
-  },
-  itemTextActive: {
-    fontWeight: "600",
-    color: "#fff",
   },
 });

@@ -1,15 +1,7 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  Pressable,
-} from "react-native";
-import React from "react";
-import { ArticlesProps, NewsDataType } from "@/types";
+import { Text, StyleSheet, Dimensions, Image, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ArticlesProps } from "@/types";
 import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
-import { Colors } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   Extrapolation,
@@ -17,6 +9,8 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { router } from "expo-router";
+import { useDarkMode } from "@/context/darkModeProvider";
+import { getIsDarkModeTrue } from "@/utils/darkModeStorage";
 
 interface NewsSliderProps {
   item: ArticlesProps;
@@ -27,6 +21,9 @@ interface NewsSliderProps {
 const { width } = Dimensions.get("screen");
 
 export default function NewsSlider({ item, index, scrollX }: NewsSliderProps) {
+  const { Colors } = useDarkMode();
+  const [isDarkModeActive, setIsDarkModeActive] = useState<boolean>(false);
+
   const rnStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -50,17 +47,26 @@ export default function NewsSlider({ item, index, scrollX }: NewsSliderProps) {
     };
   });
 
+  useEffect(() => {
+    const fetchDarkModeSetting = async () => {
+      const isDarkTrue = await getIsDarkModeTrue();
+      setIsDarkModeActive(isDarkTrue);
+    };
+
+    fetchDarkModeSetting();
+  }, []);
+
   const onNavigateToViewContent = () => {
-    const {  
-      author, 
-      title, 
-      description, 
-      url, 
-      urlToImage, 
-      publishedAt, 
+    const {
+      author,
+      title,
+      description,
+      url,
+      urlToImage,
+      publishedAt,
       content,
-      source
-  } = item; 
+      source,
+    } = item;
 
     router.push({
       pathname: "/newsInfoDetails",
@@ -72,21 +78,30 @@ export default function NewsSlider({ item, index, scrollX }: NewsSliderProps) {
         urlToImage,
         publishedAt,
         content,
-        source: source.name
-      }
-    })
-  }
+        source: source.name,
+      },
+    });
+  };
 
   return (
     <Animated.View style={[styles.itemWrapper, rnStyle]} key={index}>
       <Pressable onPress={onNavigateToViewContent}>
         <Image source={{ uri: item.urlToImage }} style={styles.image} />
         <LinearGradient
-          colors={["transparent", "rgba(0, 0, 0, 0.8)"]}
+          colors={
+            isDarkModeActive
+              ? ["transparent", "rgba(0, 0, 0, 0.01)"]
+              : ["transparent", "rgba(0, 0, 0, 0.8)"]
+          }
           style={styles.background}
         >
-          <Text style={styles.sourceName}>Source: {item.source.name}</Text>
-          <Text style={styles.sourceDesc} numberOfLines={2}>
+          <Text style={[styles.sourceName, { color: Colors.white }]}>
+            Source: {item.source.name}
+          </Text>
+          <Text
+            style={[styles.sourceDesc, { color: Colors.white }]}
+            numberOfLines={2}
+          >
             {item.description}
           </Text>
         </LinearGradient>
@@ -118,14 +133,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   sourceName: {
-    color: Colors.white,
     fontSize: 16,
     fontWeight: "600",
     top: 70,
   },
   sourceDesc: {
     fontSize: 14,
-    color: Colors.white,
     position: "absolute",
     top: 120,
     paddingHorizontal: 20,

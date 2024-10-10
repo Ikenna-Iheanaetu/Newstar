@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
+import { useDarkMode } from "@/context/darkModeProvider";
 
 interface HeaderProps {}
 
 export default function Header({}: HeaderProps) {
+  const { Colors } = useDarkMode();
+
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
@@ -14,12 +16,16 @@ export default function Header({}: HeaderProps) {
           style={styles.img}
         />
         <View style={{ gap: 3 }}>
-          <Text style={styles.welcomeText}>Welcome</Text>
-          <Text style={styles.username}>Ikenna Iheanaetu</Text>
+          <Text style={[styles.welcomeText, { color: Colors.darkGrey }]}>
+            Welcome
+          </Text>
+          <Text style={[styles.username, { color: Colors.darkGrey }]}>
+            Ikenna Iheanaetu
+          </Text>
         </View>
       </View>
       <Pressable>
-        <Ionicons name="notifications-outline" size={24} color={Colors.black} />
+        <Ionicons name="notifications-outline" size={24} color={Colors.notificationColor} />
       </Pressable>
     </View>
   );
@@ -31,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20
+    marginBottom: 20,
   },
   img: {
     width: 50,
@@ -46,11 +52,9 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 12,
-    color: Colors.darkGrey
   },
   username: {
     fontSize: 14,
     fontWeight: "700",
-    color: Colors.darkGrey
-  }
+  },
 });

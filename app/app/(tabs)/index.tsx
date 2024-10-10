@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BreakingNews from "@/components/breakingNews";
 import FetchErrorView from "@/components/fetchErrorView";
 import Header from "@/components/header";
-import SearchBar from "@/components/searchBar";
-import { Colors } from "@/constants/Colors";
+
 import { getBreakingNews, getNewsByCategory } from "@/lib/fetchNews";
 import { ArticlesProps } from "@/types";
 import Categories from "@/components/categories";
 import NewsByCategory from "@/components/newsByCategory";
 import { NewsByCategoryType } from "@/types/newsByCategory";
 import newsCategoryList from "@/constants/Categories";
-import { router } from "expo-router";
+import { useDarkMode } from "@/context/darkModeProvider";
+import { getIsDarkModeTrue } from "@/utils/darkModeStorage";
 
 export default function Index() {
   const { top: safeTop } = useSafeAreaInsets();
@@ -20,8 +21,12 @@ export default function Index() {
   const [newsByCategory, setNewsByCategory] = useState<NewsByCategoryType>({});
   // const [textValue, setTextValue] = useState<string>("");
 
+  const { Colors } = useDarkMode();
+
   const [activeNewsCategoryIndex, setActiveNewsCategoryIndex] =
     useState<number>(0);
+
+  const [isDarkModeActive, setIsDarkModeActive] = useState<boolean>(false);
 
   const {
     data: breakingNewsFetch,
@@ -38,6 +43,15 @@ export default function Index() {
   } = getNewsByCategory(
     newsCategoryList[activeNewsCategoryIndex]?.slug || "general"
   );
+
+  useEffect(() => {
+    const fetchDarkModeSetting = async () => {
+      const isDarkTrue = await getIsDarkModeTrue();
+      setIsDarkModeActive(isDarkTrue);
+    };
+
+    fetchDarkModeSetting();
+  }, []);
 
   useEffect(() => {
     if (breakingNewsFetch) {
@@ -79,7 +93,16 @@ export default function Index() {
   // };
 
   return (
-    <ScrollView style={[styles.container, { marginTop: safeTop }]}>
+    <ScrollView
+      style={[
+        styles.container,
+        { marginTop: safeTop, backgroundColor: Colors.background },
+      ]}
+    >
+      <StatusBar
+        style={isDarkModeActive ? "light" : "dark"} // Adjust the text color
+        backgroundColor={Colors.background}
+      />
       <Header />
 
       {/* <SearchBar
@@ -91,7 +114,7 @@ export default function Index() {
       {loading ? (
         <ActivityIndicator
           size="large"
-          color={Colors.black}
+          color={Colors.activityLoaderColor}
           style={styles.indicator}
         />
       ) : error ? (
