@@ -7,14 +7,12 @@ import { router } from "expo-router";
 interface SearchBarProps {
   textValue?: string;
   setTextValue?: React.Dispatch<React.SetStateAction<string>>;
-  onNavigateToDiscover?: boolean
   handleSubmit: () => void;
 }
 
 export default function SearchBar({
   textValue,
   setTextValue,
-  onNavigateToDiscover = false,
   handleSubmit
 }: SearchBarProps) {
 

@@ -18,7 +18,7 @@ export default function Index() {
   const { top: safeTop } = useSafeAreaInsets();
   const [breakingNews, setBreakingNews] = useState<ArticlesProps[]>([]);
   const [newsByCategory, setNewsByCategory] = useState<NewsByCategoryType>({});
-  const [textValue, setTextValue] = useState<string>("");
+  // const [textValue, setTextValue] = useState<string>("");
 
   const [activeNewsCategoryIndex, setActiveNewsCategoryIndex] =
     useState<number>(0);
@@ -68,26 +68,26 @@ export default function Index() {
     setActiveNewsCategoryIndex(index);
   };
 
-  const handleSubmit = () => {
-    if (textValue.trim() !== "") {
-      router.navigate({
-        pathname: "/(tabs)/discover",
-        params: { searchQuery: textValue },
-      });
-      setTextValue(""); // Clear the text input after navigation
-    }
-  };
+  // const handleSubmit = () => {
+  //   if (textValue.trim() !== "") {
+  //     router.navigate({
+  //       pathname: "/(tabs)/discover",
+  //       params: { searchQuery: textValue },
+  //     });
+  //     setTextValue(""); // Clear the text input after navigation
+  //   }
+  // };
 
   return (
     <ScrollView style={[styles.container, { marginTop: safeTop }]}>
       <Header />
 
-      <SearchBar
+      {/* <SearchBar
         setTextValue={setTextValue}
         textValue={textValue}
         onNavigateToDiscover={true}
         handleSubmit={handleSubmit}
-      />
+      /> */}
       {loading ? (
         <ActivityIndicator
           size="large"

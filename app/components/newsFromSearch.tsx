@@ -68,7 +68,7 @@ export default function NewsFromSearch({
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       {data.map((news: ArticlesProps, index: number) => (
         <Pressable
           onPress={() => onNavigateToViewContent(index)}
@@ -85,7 +85,7 @@ export default function NewsFromSearch({
           </View>
         </Pressable>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 

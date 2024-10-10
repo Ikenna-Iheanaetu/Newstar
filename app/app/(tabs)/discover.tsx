@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SearchBar from "@/components/searchBar";
@@ -22,54 +22,44 @@ export default function Discover() {
 
   const handleRequest = async (searchString: string) => {
     setLoading(true);
+    setError(false); // Reset error state before the request
     const url = "http://192.168.56.1:3000/news";
 
-    if (!url) {
-      setLoading(false);
-      setError(true);
-      console.error(
-        "EXPO_PUBLIC__NEWS_SERVER_URL is not set in the environment"
-      );
-      return; // Early return if the URL is not set
-    }
-
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`${url}/search-news`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // Set the content type
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ searchString }),
+        body: JSON.stringify({ searchString }), // Send the searchString as part of the request body
       });
 
       if (!response.ok) {
         setError(true);
-        throw new Error(`HTTP error! status: ${response.status}`); // Throw an error for non-200 responses
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const res: ArticlesProps[] = await response.json(); // Use await to parse the response
-
+      const res: ArticlesProps[] = await response.json();
+console.log(res);
       if (res) {
-        // Assuming you want to check if res is truthy
         setData(res);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setError(true); // Set error state if there's an error
     } finally {
       setLoading(false);
     }
   };
 
   const refetch = () => {
-    if (searchQuery) {
-      handleRequest(searchQuery.trim());
-    }
-    handleRequest(textValue.trim());
+    handleRequest(textValue.trim() || searchQuery.trim());
   };
 
   const handleSubmit = () => {
     handleRequest(textValue.trim());
   };
+
   return (
     <View style={[styles.container, { marginTop: safeTop + 20 }]}>
       <SearchBar
