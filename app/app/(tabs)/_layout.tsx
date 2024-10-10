@@ -17,12 +17,7 @@ export default function TabLayout() {
         name="discover"
         options={{
           title: "Discover",
-        }}
-      />
-      <Tabs.Screen
-        name="saved"
-        options={{
-          title: "Saved",
+          headerShown: false
         }}
       />
       <Tabs.Screen

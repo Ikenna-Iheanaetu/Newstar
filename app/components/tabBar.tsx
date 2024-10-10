@@ -44,7 +44,7 @@ export default function TabBar({
             top: 52,
             left: 34,
             height: 8,
-            width: 40,
+            width: 75,
           },
         ]}
       />

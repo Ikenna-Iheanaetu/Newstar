@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BreakingNews from "@/components/breakingNews";
 import FetchErrorView from "@/components/fetchErrorView";
@@ -7,16 +7,19 @@ import Header from "@/components/header";
 import SearchBar from "@/components/searchBar";
 import { Colors } from "@/constants/Colors";
 import { getBreakingNews, getNewsByCategory } from "@/lib/fetchNews";
-import { ArticlesProps, NewsDataType } from "@/types";
+import { ArticlesProps } from "@/types";
 import Categories from "@/components/categories";
 import NewsByCategory from "@/components/newsByCategory";
 import { NewsByCategoryType } from "@/types/newsByCategory";
 import newsCategoryList from "@/constants/Categories";
+import { router } from "expo-router";
 
 export default function Index() {
   const { top: safeTop } = useSafeAreaInsets();
   const [breakingNews, setBreakingNews] = useState<ArticlesProps[]>([]);
   const [newsByCategory, setNewsByCategory] = useState<NewsByCategoryType>({});
+  const [textValue, setTextValue] = useState<string>("");
+
   const [activeNewsCategoryIndex, setActiveNewsCategoryIndex] =
     useState<number>(0);
 
@@ -65,10 +68,26 @@ export default function Index() {
     setActiveNewsCategoryIndex(index);
   };
 
+  const handleSubmit = () => {
+    if (textValue.trim() !== "") {
+      router.navigate({
+        pathname: "/(tabs)/discover",
+        params: { searchQuery: textValue },
+      });
+      setTextValue(""); // Clear the text input after navigation
+    }
+  };
+
   return (
     <ScrollView style={[styles.container, { marginTop: safeTop }]}>
       <Header />
-      <SearchBar />
+
+      <SearchBar
+        setTextValue={setTextValue}
+        textValue={textValue}
+        onNavigateToDiscover={true}
+        handleSubmit={handleSubmit}
+      />
       {loading ? (
         <ActivityIndicator
           size="large"
